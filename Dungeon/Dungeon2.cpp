@@ -135,7 +135,7 @@ void movement(Player &p1, char move, int maze[][WIDTH])
 	}
 }
 
-//Read a Map from a file and store it locally.
+//Read a Map from a file and store it locally. j
 void getFromFile(int maze[][WIDTH])
 {
 	std::ifstream myFile("map.txt");  //open the file map.txt
