@@ -13,16 +13,19 @@ void printMaze(int [][WIDTH], Player &, std::vector<Player>&);
 void displayTile(int mazeIndex);
 void movement(Player &p1, char move, int[][WIDTH]);
 void getFromFile(int[][WIDTH]);
+void checkCombat(Player &, std::vector<Player>&);
+void startCombat(Player &, Player &);
+
 
 int main()
 {
-	Player player = Player(18,16);
+	Player player = Player(18,16, 20, 2);
 	std::vector<Player> enemy;
 	int maze[HEIGHT][WIDTH];
 	getFromFile(maze);
 	char input = ' ';
 
-	enemy.push_back(Player(2, 12));
+	enemy.push_back(Player(2, 12, 4, 1));
 	//Main Game Loop
 	while (true)
 	{
@@ -30,6 +33,8 @@ int main()
 		std::cout << "Please enter where you want to move WASD: ";
 		std::cin >> input;
 		movement(player, input, maze);
+		checkCombat(player, enemy);
+		system("PAUSE");
 		system("CLS");
 	}
 
@@ -70,6 +75,9 @@ void displayTile(int mazeIndex)
 			break;
 		case 2:
 			std::cout << 'E';
+			break;
+		case 3:
+			std::cout << '_';
 			break;
 	}
 }
@@ -135,7 +143,7 @@ void movement(Player &p1, char move, int maze[][WIDTH])
 	}
 }
 
-//Read a Map from a file and store it locally. j
+//Read a Map from a file and store it locally.
 void getFromFile(int maze[][WIDTH])
 {
 	std::ifstream myFile("map.txt");  //open the file map.txt
@@ -149,4 +157,28 @@ void getFromFile(int maze[][WIDTH])
 	}
 
 	myFile.close();
+}
+
+void checkCombat(Player &p1, std::vector<Player>& enemies)
+{
+	for (int i = 0; i < enemies.size(); i++)
+	{
+		if (p1 == enemies.at(i))
+			startCombat(p1, enemies.at(i));
+	}
+}
+
+void startCombat(Player &p1, Player &enemy)
+{
+	while (true)
+	{
+		std::cout << "Health: " << p1.getHealth() << std::endl;
+		std::cout << "Attack: " << p1.getAttack() << std::endl << std::endl;
+		enemy.setHealth(enemy.getHealth() - p1.getAttack());
+		p1.setHealth(p1.getHealth() - enemy.getAttack());
+		if (p1.getHealth() <= 0 || enemy.getHealth() <= 0)
+		{
+			break;
+		}
+	}
 }
